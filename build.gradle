@@ -1,0 +1,93 @@
+group 'com.ai.opt.validator'
+
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+
+sourceCompatibility = 1.7
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+sourceSets {
+    main {
+        java {
+            srcDirs = [
+                'src/main/java'
+            ]
+        }
+        resources { srcDirs = ['src/main/resources']}
+    }
+    test {
+        java {
+            srcDirs = [
+                'src/test/java'
+            ]
+        }
+        resources { srcDirs = ['src/test/resources']}
+    }
+}
+
+ext {
+    appName="opt-validator"
+    moduleVersion='1.0'
+    builtBy="gradle 2.2"
+    publishUserName = "runnerdev"
+    publishUserPassword = "runnerdev"
+    publishURL = "http://10.1.228.199:18081/nexus/content/repositories/thirdparty/"
+}
+
+repositories { maven { url "http://10.1.228.199:18081/nexus/content/groups/public/" } }
+
+dependencies {
+    compile "javax.validation:validation-api:1.0.0.GA"
+	compile "org.hibernate:hibernate-validator:4.2.0.Final"
+    
+   	
+   	testCompile(
+            "org.springframework:spring-test:4.1.7.RELEASE",
+            "junit:junit:4.12"
+    )
+}
+
+jar {
+    baseName appName
+    version moduleVersion
+    manifest {
+        attributes 'packageName': baseName, 'Built-By': builtBy,'create-date': new Date().format('yyyy-MM-dd HH:mm:ss'), 'Manifest-Version': version
+    }
+}
+
+publishing {
+    publications {
+        publishing.publications.create("${appName}", MavenPublication) {
+            groupId group
+            artifactId appName
+            version moduleVersion
+            artifact jar
+            pom.withXml {
+                asNode().children().last() + {
+                    delegate.dependencies {
+                        delegate.dependency {
+                            delegate.groupId("javax.validation")
+                            delegate.artifactId("validation-api")
+                            delegate.version("1.0.0.GA")
+                        }
+                        delegate.dependency {
+                            delegate.groupId("org.hibernate")
+                            delegate.artifactId("hibernate-validator")
+                            delegate.version("4.2.0.Final")
+                        }
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url publishURL
+            credentials {
+                username = publishUserName
+                password = publishUserPassword
+            }
+        }
+    }
+}
