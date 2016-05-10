@@ -28,7 +28,7 @@ sourceSets {
 
 ext {
     appName="opt-validator"
-    moduleVersion='1.0'
+    moduleVersion='1.0.1'
     builtBy="gradle 2.2"
     publishUserName = "runnerdev"
     publishUserPassword = "runnerdev"
