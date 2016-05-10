@@ -3,14 +3,14 @@ package com.ai.opt.validator.test;
 import org.hibernate.validator.constraints.Email;
 
 import com.ai.opt.validator.constraints.MobilePhone;
-import com.ai.opt.validator.constraints.StringConstantsRange;
+import com.ai.opt.validator.constraints.StringEnum;
 
 public class Person {
 
     @Email(message = "邮箱格式不正确")
     private String email;
 
-    @StringConstantsRange(constants = { "男", "女" }, message = "性别必须是男/女")
+    @StringEnum(enumClazz = GenderEnum.class, message = "性别必须是Female|Male|Other")
     private String sex;
 
     @MobilePhone(message = "电话格式不正确")
